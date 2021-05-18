@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block body_block %}
+<div class="jumbotron">
+    <h2>Adamson Attendance</h2>
+    {% if user.is_authenticated %}
+    <p>Welcome {{user.first_name}} {{user.last_name}}</p>
+    {% endif %}
+</div>
+
+<video id="video" width="300" height="300" autoplay></video>
+<canvas id ="canvas" width="300" height="300"></canvas>
+
+<form action="" method="POST">
+    <input type="url" name="url" id="photo_url" hidden=true>
+    <input type="submit" value="Take Photo">
+</form>
+
+<script>
+let canvas = document.querySelector('#canvas');
+let context = canvas.getContext('2d')
+let video = document.querySelector("#video")
+
+if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+  navigator.mediaDevices.getUserMedia({video:true}).then((stream) => {
+    video.srcObject = stream;
+    video.play();
+  })
+}
+
+document.querySelector("#snap").addEventListener('click',() => {
+    context.drawImage(video,0,0,300,300)
+    var dataURL = canvas.toDataURL("image/png");
+})
+    </script>
+{% endblock %}
