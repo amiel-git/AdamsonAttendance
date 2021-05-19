@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<video id="video" width="300" height="300" autoplay></video>
+<canvas id ="canvas" width="300" height="300"></canvas>
+
+<form action="{% url  'core:capture' %}" method="POST">
+  {% csrf_token %}
+    <input type="url" name="url" id="photo_url" hidden=true>
+    <input type="submit" value="Take Photo" id="snap">
+</form>
+
+<script>
+let canvas = document.querySelector('#canvas');
+let context = canvas.getContext('2d')
+let video = document.querySelector("#video")
+
+if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+  navigator.mediaDevices.getUserMedia({video:true}).then((stream) => {
+    video.srcObject = stream;
+    video.play();
+  })
+}
+
+document.querySelector("#snap").addEventListener('click',() => {
+    context.drawImage(video,0,0,300,300)
+    var dataURL = canvas.toDataURL("image/png");
+    document.querySelector("#photo_url").value = dataURL
+})
+    </script>
+
+{% endblock %}

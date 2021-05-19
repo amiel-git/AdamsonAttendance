@@ -1,4 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block head_block %}
+<link rel="stylesheet" href="{% static 'css/main.css'%}">
+{% endblock %}
 
 {% block body_block %}
 
@@ -7,10 +11,16 @@
     Face validation failed! Please try again
   </div>
   {% endif %}
-<div>
-    <form method="POST" action="{% url 'core:login' %}">
+
+<div class="video-container">
+  <video id="video" width="150" height="150" autoplay></video>
+  <canvas id ="canvas" width="300" height="300" hidden=true></canvas>
+</div>
+<div class="form-container">
+    <form method="POST" action="{% url 'core:login' %} ">
         {% csrf_token %}
         <div class="form-group">
+          <input type="url" name="url" id="photo_url" hidden=true>
             <label for="email">Email address</label>
             <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
           </div>
@@ -18,8 +28,28 @@
             <label for="password">Password</label>
             <input type="password" class="form-control" id="password" name="password" placeholder="Password">
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" id="snap" class="btn btn-primary">Login</button>
+          
     </form>
+    <small>Don't have an account yet? Go to <a href="{% url 'core:registration'%}">registration</a> page</small>
 </div>
 
+<script>
+  let canvas = document.querySelector('#canvas');
+  let context = canvas.getContext('2d')
+  let video = document.querySelector("#video")
+  
+  if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+    navigator.mediaDevices.getUserMedia({video:true}).then((stream) => {
+      video.srcObject = stream;
+      video.play();
+    })
+  }
+  
+  document.querySelector("#snap").addEventListener('click',() => {
+      context.drawImage(video,0,0,300,300)
+      var dataURL = canvas.toDataURL("image/png");
+      document.querySelector("#photo_url").value = dataURL
+  })
+      </script>
 {% endblock %}
