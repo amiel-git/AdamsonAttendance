@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from core.forms import RegistrationForm
@@ -82,12 +82,13 @@ def loginView(request):
                 else:
                     #cap.release()
                     logout(request)
-                    return HttpResponseRedirect(reverse('core:login'))
+                    return render(request,'login.html',context={'message':'Face did not match'})
             except:
                 #cap.release()
                 logout(request)
-                return HttpResponseRedirect(reverse('core:login'))
-
+                return render(request,'login.html',context={'message':'Face not detected'})
+        else:
+            return render(request,'login.html',context={'message':'Email or password is incorrect'})
 
     return render(request,'login.html')
 

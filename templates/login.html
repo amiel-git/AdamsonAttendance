@@ -6,9 +6,9 @@
 
 {% block body_block %}
 
-{% if invalid_login %}
+{% if message %}
 <div class="alert alert-danger" role="alert">
-    Face validation failed! Please try again
+    <p>{{message}}</p>
   </div>
   {% endif %}
 
